@@ -1,16 +1,27 @@
-bits 32
+section .data
+  MAGIC equ 0x1BADB002
+  FLAGS equ 0
+  CHECKSUM equ -(MAGIC + FLAGS)
+
+section .multiboot
+align 4
+  dd MAGIC
+  dd FLAGS
+  dd CHECKSUM
+
+section .boot_stack
+align 4
+stack_bottom:
+resb 16384
+stack_top:
+
 section .text
-		align 4
-		dd 0x1BADB002
-		dd 0x00
-		dd - (0x1BADB002 + 0x00)
-global start
-extern kmain
-start:
-	cli
-	mov esp, stack_space
-	call kmain
-	hlt
-section .bss
-resb 8192
-stack_space:
+global _start
+_start:
+  extern bootgo.kernel.Main
+  call bootgo.kernel.Main
+  cli
+
+.hang:
+  hlt
+  jmp .hang
