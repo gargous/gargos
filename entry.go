@@ -18,3 +18,7 @@ func kmain() {
 		j = j + 2
 	}
 }
+
+func main() {
+
+}
